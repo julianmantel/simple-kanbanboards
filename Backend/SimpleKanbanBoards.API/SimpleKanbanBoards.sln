@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36705.20
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleKanbanBoards.API", "SimpleKanbanBoards.API.csproj", "{6D89B3DC-2ED5-4AB3-A1AD-E5E157631CAB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{89968BD5-BBA3-4F69-B08C-3635D36CD016} = {89968BD5-BBA3-4F69-B08C-3635D36CD016}
+		{CDD906FD-2326-455F-997A-A4A165F36D5F} = {CDD906FD-2326-455F-997A-A4A165F36D5F}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleKanbanBoards.DataAccess", "..\SimpleKanbanBoards.DataAccess\SimpleKanbanBoards.DataAccess.csproj", "{CDD906FD-2326-455F-997A-A4A165F36D5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleKanbanBoards.Business", "..\SimpleKanbanBoards.Business\SimpleKanbanBoards.Business.csproj", "{89968BD5-BBA3-4F69-B08C-3635D36CD016}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CDD906FD-2326-455F-997A-A4A165F36D5F} = {CDD906FD-2326-455F-997A-A4A165F36D5F}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6D89B3DC-2ED5-4AB3-A1AD-E5E157631CAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D89B3DC-2ED5-4AB3-A1AD-E5E157631CAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D89B3DC-2ED5-4AB3-A1AD-E5E157631CAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D89B3DC-2ED5-4AB3-A1AD-E5E157631CAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDD906FD-2326-455F-997A-A4A165F36D5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDD906FD-2326-455F-997A-A4A165F36D5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDD906FD-2326-455F-997A-A4A165F36D5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDD906FD-2326-455F-997A-A4A165F36D5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89968BD5-BBA3-4F69-B08C-3635D36CD016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89968BD5-BBA3-4F69-B08C-3635D36CD016}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89968BD5-BBA3-4F69-B08C-3635D36CD016}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89968BD5-BBA3-4F69-B08C-3635D36CD016}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0A126949-5118-4DAF-90C5-2AA69AD09340}
+	EndGlobalSection
+EndGlobal

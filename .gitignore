@@ -1,0 +1,12 @@
+# Visual Studio
+.vs/
+
+# Build output
+**/bin/
+**/obj/
+
+# Node
+node_modules/
+
+# Env
+.env
