@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Asn1.Ocsp;
 using SimpleKanbanBoards.Business.Models.Board;
 using SimpleKanbanBoards.Business.Models.Project;
 using SimpleKanbanBoards.Business.Service.IService;
@@ -25,10 +26,28 @@ namespace SimpleKanbanBoards.Business.Service
 
         public async Task AddDevToProjectAsync(ProjectUserModel request)
         {
-            var existingUser = await _userRepository.Exist(u => u.IdUser == request.IdDev);
-            if(!existingUser) 
+            var project = await _projectRepository.GetFirstOrDefault(p => p.IdProject == request.IdProject);
+            if(project == null)
+            {
+                throw new Exception("Project does not exist.");
+            }
+
+            var userExist = await _userRepository.Exist(u => u.IdUser == request.IdDev);
+            if(!userExist) 
             {
                 throw new Exception("User does not exist.");
+            }
+
+            var isUserInProject = await _projectRepository.IsUserInProject(request.IdDev);
+            if(isUserInProject)
+            {
+                throw new Exception("User is already assigned to this project.");
+            }
+
+            var hasNotMaxDevs = _projectRepository.CountUsers(request.IdProject) <= project.MaxDevs;
+            if(!hasNotMaxDevs)
+            {
+                throw new Exception("Project has reached the maximum number of developers.");
             }
 
             var userProject = new UserProject
@@ -43,13 +62,13 @@ namespace SimpleKanbanBoards.Business.Service
 
         public async Task CreateProjectAsync(CreateProjectModel project)
         {
-            var existingProject = await _projectRepository.GetFirstOrDefault(p => p.Title == project.Title);
-            var projectManager = await _userRepository.GetFirstOrDefault(u => u.IdUser == project.AuthorId);
-
-            if (existingProject != null)
+            var projectExist = await _projectRepository.Exist(p => p.Title == project.Title);
+            if(projectExist)
             {
                 throw new Exception("Project with the same title already exists.");
             }
+
+            var projectManager = await _userRepository.GetFirstOrDefault(u => u.IdUser == project.AuthorId);
 
             var newProject = new Project
             {
@@ -114,6 +133,13 @@ namespace SimpleKanbanBoards.Business.Service
             {
                 throw new Exception("Project does not exist.");
             }
+
+            var titleExist = await _projectRepository.Exist(p => p.Title == project.Title);
+            if(titleExist && existingProject.Title != project.Title)
+            {
+                throw new Exception("Another project with the same title already exists.");
+            }
+
             existingProject.Title = project.Title;
             existingProject.Description = project.Description;
             existingProject.MaxDevs = project.MaxDevs;

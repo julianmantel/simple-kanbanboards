@@ -34,7 +34,8 @@ namespace SimpleKanbanBoards.API.Controllers
             return Ok(ApiResult<string>.Success("Project created successfully"));
         }
 
-        [HttpPost("dev")]
+        [HttpPost("add-dev")]
+        [AllowAnonymous]
         public async Task<IActionResult> AddDevToProject([FromBody] ProjectUserModel request)
         {
             await _projectService.AddDevToProjectAsync(request);

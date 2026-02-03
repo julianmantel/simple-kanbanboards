@@ -24,8 +24,7 @@ namespace SimpleKanbanBoards.Business.Validators.User
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("UserName is required.")
                 .MinimumLength(minUserNameLength).WithMessage($"UserName must be at least {minUserNameLength} characters long.")
-                .MaximumLength(maxUserNameLength).WithMessage($"UserName must not exceed {maxUserNameLength} characters.")
-                .Must(IsUserNameUnique).WithMessage("Username already exists.");
+                .MaximumLength(maxUserNameLength).WithMessage($"UserName must not exceed {maxUserNameLength} characters.");
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password is required.")
@@ -36,22 +35,7 @@ namespace SimpleKanbanBoards.Business.Validators.User
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("A valid email is required.")
-                .Must(IsEmailUnique).WithMessage("Email already exists.");
-        }
-
-        private bool IsUserNameUnique(string username)
-        {
-            var user = _userRepository.GetFirstOrDefault(u => u.Username == username);
-
-            return user == null;
-        }
-
-        private bool IsEmailUnique(string email)
-        {
-            var user = _userRepository.GetFirstOrDefault(u => u.Email == email);
-
-            return user == null;
+                .EmailAddress().WithMessage("A valid email is required.");
         }
     }
 }

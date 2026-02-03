@@ -62,6 +62,12 @@ namespace SimpleKanbanBoards.Business.Service
 
         public async Task CreateUserAsync(CreateUserModel newUser)
         {
+            var userExist = await _userRepository.Exist(u => u.Username == newUser.UserName || u.Email == newUser.Email);
+            if (userExist)
+            {
+                throw new Exception("User with the same username or email already exists.");
+            }
+
             AuthUtil.CreatePasswordHash(newUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
             var user = new User
             {
