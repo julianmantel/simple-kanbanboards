@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using SimpleKanbanBoards.API.Middlewares;
 using SimpleKanbanBoards.Business.Models;
 using SimpleKanbanBoards.Business.Service;
 using SimpleKanbanBoards.Business.Service.IService;
@@ -103,5 +104,6 @@ app.UseAntiforgery();
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Asn1.Ocsp;
+using SimpleKanbanBoards.Business.Exceptions;
 using SimpleKanbanBoards.Business.Models.Board;
 using SimpleKanbanBoards.Business.Models.Project;
 using SimpleKanbanBoards.Business.Service.IService;
@@ -29,25 +30,25 @@ namespace SimpleKanbanBoards.Business.Service
             var project = await _projectRepository.GetFirstOrDefault(p => p.IdProject == request.IdProject);
             if(project == null)
             {
-                throw new Exception("Project does not exist.");
+                throw new NotFoundException("Project does not exist.");
             }
 
             var userExist = await _userRepository.Exist(u => u.IdUser == request.IdDev);
             if(!userExist) 
             {
-                throw new Exception("User does not exist.");
+                throw new NotFoundException("User does not exist.");
             }
 
             var isUserInProject = await _projectRepository.IsUserInProject(request.IdDev);
             if(isUserInProject)
             {
-                throw new Exception("User is already assigned to this project.");
+                throw new ConflictException("User is already assigned to this project.");
             }
 
             var hasNotMaxDevs = _projectRepository.CountUsers(request.IdProject) <= project.MaxDevs;
             if(!hasNotMaxDevs)
             {
-                throw new Exception("Project has reached the maximum number of developers.");
+                throw new ConflictException("Project has reached the maximum number of developers.");
             }
 
             var userProject = new UserProject
@@ -65,7 +66,7 @@ namespace SimpleKanbanBoards.Business.Service
             var projectExist = await _projectRepository.Exist(p => p.Title == project.Title);
             if(projectExist)
             {
-                throw new Exception("Project with the same title already exists.");
+                throw new ConflictException("Project with the same title already exists.");
             }
 
             var projectManager = await _userRepository.GetFirstOrDefault(u => u.IdUser == project.AuthorId);
@@ -92,7 +93,7 @@ namespace SimpleKanbanBoards.Business.Service
             var project = await _projectRepository.GetFirstOrDefault(p => p.IdProject == projectId, p => p.Boards);
             if (project == null)
             {
-                throw new Exception("Project does not exist.");
+                throw new NotFoundException("Project does not exist.");
             }
 
             var projectModel = new ProjectModel
@@ -120,7 +121,7 @@ namespace SimpleKanbanBoards.Business.Service
             var project = await _projectRepository.GetFirstOrDefault(p => p.IdProject == projectId);
             if (project == null)
             {
-                throw new Exception("Project does not exist.");
+                throw new NotFoundException("Project does not exist.");
             }
 
             _projectRepository.Remove(project);
@@ -131,13 +132,13 @@ namespace SimpleKanbanBoards.Business.Service
             var existingProject = await _projectRepository.GetFirstOrDefault(p => p.IdProject == project.Id);
             if (existingProject == null)
             {
-                throw new Exception("Project does not exist.");
+                throw new NotFoundException("Project does not exist.");
             }
 
             var titleExist = await _projectRepository.Exist(p => p.Title == project.Title);
             if(titleExist && existingProject.Title != project.Title)
             {
-                throw new Exception("Another project with the same title already exists.");
+                throw new ConflictException("Another project with the same title already exists.");
             }
 
             existingProject.Title = project.Title;

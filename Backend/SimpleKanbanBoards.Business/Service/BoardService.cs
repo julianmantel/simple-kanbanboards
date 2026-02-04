@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SimpleKanbanBoards.Business.Exceptions;
 using SimpleKanbanBoards.Business.Models.Board;
 using SimpleKanbanBoards.Business.Service.IService;
 using SimpleKanbanBoards.DataAccess.Models;
@@ -14,14 +15,21 @@ namespace SimpleKanbanBoards.Business.Service
     public class BoardService : IBoardService
     {
         private readonly IBoardRepository _boardRepository;
-
-        public BoardService(IBoardRepository boardRepository)
+        private readonly IProjectRepository _projectRepository;
+        public BoardService(IBoardRepository boardRepository, IProjectRepository projectRepository)
         {
             _boardRepository = boardRepository;
+            _projectRepository = projectRepository;
         }
 
         public async Task CreateBoardAsync(BoardModel board)
         {
+            var projectExist = await _projectRepository.Exist(p => p.IdProject == board.ProjectId);
+            if(!projectExist)
+            {
+                throw new NotFoundException("Project does not exist.");
+            }
+
             var newBoard = new Board
             {
                 BoardName = board.Name,
@@ -39,7 +47,7 @@ namespace SimpleKanbanBoards.Business.Service
             var board = await _boardRepository.GetFirstOrDefault(b => b.IdBoard == boardId);
             if(board == null)
             {
-                throw new Exception("Board not found.");
+                throw new NotFoundException("Board not found.");
             }
 
             await _boardRepository.ToggleBoardAsync(board);
@@ -50,7 +58,7 @@ namespace SimpleKanbanBoards.Business.Service
             var board = await _boardRepository.GetFirstOrDefault(b => b.IdBoard == boardId);
             if (board == null)
             {
-                throw new Exception("Board not found.");
+                throw new NotFoundException("Board not found.");
             }
 
             return new BoardModel
@@ -69,7 +77,7 @@ namespace SimpleKanbanBoards.Business.Service
             var board = await _boardRepository.GetFirstOrDefault(b => b.IdBoard == updateBoard.Id);
             if (board == null)
             {
-                throw new Exception("Board not found.");
+                throw new NotFoundException("Board not found.");
             }
 
             board.BoardName = updateBoard.Name;

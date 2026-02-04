@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using SimpleKanbanBoards.Business.Exceptions;
 using SimpleKanbanBoards.Business.Models.Email;
 using SimpleKanbanBoards.Business.Models.Role;
 using SimpleKanbanBoards.Business.Models.User;
@@ -46,7 +47,10 @@ namespace SimpleKanbanBoards.Business.Service
         {
             var user = await _userRepository.GetFirstOrDefault(u => u.IdUser == id, u => u.IdRols);
 
-            if (user == null) return null;
+            if (user == null)
+            {
+                throw new NotFoundException("User not found.");
+            }
 
             return new UserModel
             {
@@ -65,7 +69,7 @@ namespace SimpleKanbanBoards.Business.Service
             var userExist = await _userRepository.Exist(u => u.Username == newUser.UserName || u.Email == newUser.Email);
             if (userExist)
             {
-                throw new Exception("User with the same username or email already exists.");
+                throw new ConflictException("User with the same username or email already exists.");
             }
 
             AuthUtil.CreatePasswordHash(newUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -86,10 +90,16 @@ namespace SimpleKanbanBoards.Business.Service
         public async Task<string> LoginAsync(LoginRequestModel request)
         {
             var user = await _userRepository.GetFirstOrDefault(u => u.Username == request.UserName, u => u.IdRols);
-            if (user == null) return null;
+            if (user == null)
+            {
+                throw new UnauthorizedException("Invalid username or password.");
+            }
 
             bool validPassword = AuthUtil.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt);
-            if (!validPassword) return null;
+            if (!validPassword)
+            {
+                throw new UnauthorizedException("Invalid username or password.");
+            }
 
             var userModel = new UserModel
             {
@@ -105,7 +115,10 @@ namespace SimpleKanbanBoards.Business.Service
         public async Task ResetPasswordAsync(ResetPassRequestModel request)
         {
             var user = await _userRepository.GetFirstOrDefault(u => u.Email == request.Email);
-            if (user == null) return;
+            if (user == null)
+            {
+                throw new NotFoundException("User with the provided email does not exist.");
+            }
 
             var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(16));
 
@@ -138,8 +151,10 @@ namespace SimpleKanbanBoards.Business.Service
 
             var resetToken = await _resetPasswordRepository.GetFirstOrDefault(r => r.ResetToken == decodedToken);
 
-            if (resetToken == null) return;
-            if (resetToken.ResetTokenExpire < DateTime.UtcNow) return;
+            if (resetToken == null || resetToken.ResetTokenExpire < DateTime.UtcNow)
+            {
+                throw new UnauthorizedException("Invalid or expired password reset token.");
+            }
 
             var user = await _userRepository.GetFirstOrDefault(u => u.IdUser == resetToken.IdUser);
             AuthUtil.CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
@@ -152,7 +167,10 @@ namespace SimpleKanbanBoards.Business.Service
         public async Task DeleteUserAsync(int id)
         {
             var user = await _userRepository.GetFirstOrDefault(u => u.IdUser == id);
-            if (user == null) return;
+            if (user == null)
+            {
+                throw new NotFoundException("User not found.");
+            }
 
             _userRepository.Remove(user);
         }
