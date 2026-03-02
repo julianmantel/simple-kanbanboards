@@ -34,7 +34,6 @@ namespace SimpleKanbanBoards.API.Controllers
         public async Task<IActionResult> CreateBoard([FromBody] BoardModel createBoardModel)
         {
             await _boardService.CreateBoardAsync(createBoardModel);
-
             return Ok(ApiResult<string>.Success("Board created successfull"));
         }
 
@@ -42,7 +41,6 @@ namespace SimpleKanbanBoards.API.Controllers
         public async Task<IActionResult> ToggleBoard(int id)
         {
             await _boardService.ToggleBoardAsync(id);
-
             return Ok(ApiResult<string>.Success("Board toggled successfully"));
         }
 

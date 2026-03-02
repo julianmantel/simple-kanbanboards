@@ -35,7 +35,6 @@ namespace SimpleKanbanBoards.API.Controllers
         }
 
         [HttpPost("add-dev")]
-        [AllowAnonymous]
         public async Task<IActionResult> AddDevToProject([FromBody] ProjectUserModel request)
         {
             await _projectService.AddDevToProjectAsync(request);
@@ -46,7 +45,6 @@ namespace SimpleKanbanBoards.API.Controllers
         public async Task<IActionResult> DeleteProject(int id)
         {
             await _projectService.DeleteProjectAsync(id);
-
             return Ok(ApiResult<string>.Success("Project deleted successfully"));
         }
 
@@ -54,7 +52,6 @@ namespace SimpleKanbanBoards.API.Controllers
         public async Task<IActionResult> UpdateProject([FromBody] UpdateProjectModel request)
         {
             await _projectService.UpdateProjectAsync(request);
-
             return Ok(ApiResult<string>.Success("Project updated successfully"));
         }
     }

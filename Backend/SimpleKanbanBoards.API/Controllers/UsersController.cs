@@ -29,7 +29,6 @@ namespace SimpleKanbanBoards.API.Controllers
         public async Task<IActionResult> RegisterAsync([FromBody] CreateUserModel newUser)
         {
             await _userService.CreateUserAsync(newUser);
-
             return Ok(ApiResult<string>.Success($"{newUser.UserName} created successfully"));
         }
 
@@ -37,7 +36,6 @@ namespace SimpleKanbanBoards.API.Controllers
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestModel request)
         {
             SetTokenCookie(await _userService.LoginAsync(request));
-
             return Ok(ApiResult<string>.Success("Successful login"));
         }
 
@@ -45,7 +43,6 @@ namespace SimpleKanbanBoards.API.Controllers
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPassRequestModel request)
         {
             await _userService.ResetPasswordAsync(request);
-
             return Ok(ApiResult<string>.Success(""));
         }
 

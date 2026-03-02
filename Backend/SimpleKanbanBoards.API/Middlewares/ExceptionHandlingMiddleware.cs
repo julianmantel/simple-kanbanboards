@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using SimpleKanbanBoards.Business.Exceptions;
 
 namespace SimpleKanbanBoards.API.Middlewares
@@ -55,8 +56,9 @@ namespace SimpleKanbanBoards.API.Middlewares
 
             context.Response.StatusCode = problem.Status!.Value;
             context.Response.ContentType = "application/problem+json";
+            var json = JsonSerializer.Serialize(problem);
 
-            await context.Response.WriteAsJsonAsync(problem);
+            await context.Response.WriteAsync(json);
         }
     }
 }
