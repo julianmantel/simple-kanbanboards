@@ -17,15 +17,20 @@ namespace SimpleKanbanBoards.Business.Validators.Project
         public UpdateProjectValidator()
         {
             RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("Project title is required.")
-                .MaximumLength(maxTitleLength).WithMessage($"Project title must not exceed {maxTitleLength} characters.");
+                .NotEmpty()
+                    .WithMessage("Project title is required.")
+                .MaximumLength(maxTitleLength)
+                    .WithMessage($"Project title must not exceed {maxTitleLength} characters.");
 
             RuleFor(x => x.Description)
-                .NotEmpty().WithMessage("Project description is required.")
-                .MaximumLength(maxDescriptionLength).WithMessage($"Project description must not exceed {maxDescriptionLength} characters.");
+                .NotEmpty()
+                    .WithMessage("Project description is required.")
+                .MaximumLength(maxDescriptionLength)
+                    .WithMessage($"Project description must not exceed {maxDescriptionLength} characters.");
 
             RuleFor(x => x.MaxDevs)
-                .GreaterThan(0).WithMessage("Max developers must be greater than zero.");
+                .GreaterThan(0)
+                    .WithMessage("Max developers must be greater than zero.");
         }
     }
 }

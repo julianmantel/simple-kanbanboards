@@ -25,7 +25,7 @@ namespace SimpleKanbanBoards.Tests.Integration.Controllers
         public BoardsControllerTests(TestWebApplicationFactory factory)
         {
             _factory = factory;
-            _client = factory.CreateAuthenticatedClient("Developer");
+            _client = factory.CreateAuthenticatedClient("Project Manager");
         }
 
         [Fact]

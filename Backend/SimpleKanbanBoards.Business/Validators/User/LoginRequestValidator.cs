@@ -13,9 +13,11 @@ namespace SimpleKanbanBoards.Business.Validators.User
         public LoginRequestValidator()
         {
             RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("UserName is required.");
+                .NotEmpty()
+                    .WithMessage("UserName is required.");
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Password is required.");
+                .NotEmpty()
+                    .WithMessage("Password is required.");
         }
     }
 }

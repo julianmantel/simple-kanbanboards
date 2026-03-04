@@ -26,7 +26,7 @@ namespace SimpleKanbanBoards.Tests.Integration.Middlewares
         public ExceptionHandlingMiddlewareTests(TestWebApplicationFactory factory)
         {
             _factory = factory;
-            _client = factory.CreateAuthenticatedClient("Developer");
+            _client = factory.CreateAuthenticatedClient("Project Manager");
         }
 
         [Fact]

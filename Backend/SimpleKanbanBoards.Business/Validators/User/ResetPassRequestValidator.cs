@@ -14,8 +14,10 @@ namespace SimpleKanbanBoards.Business.Validators.User
         public ResetPassRequestValidator()
         {
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("A valid email is required.");
+                .NotEmpty()
+                    .WithMessage("Email is required.")
+                .EmailAddress()
+                    .WithMessage("A valid email is required.");
         }
     }
 }

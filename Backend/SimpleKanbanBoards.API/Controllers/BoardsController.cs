@@ -9,7 +9,7 @@ namespace SimpleKanbanBoards.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Project Manager, Developer")]
+    [Authorize(Roles = "Project Manager")]
     public class BoardsController : ControllerBase
     {
         private readonly IBoardService _boardService;

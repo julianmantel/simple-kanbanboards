@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SimpleKanbanBoards.Business.Models.BoardColumn;
 
 namespace SimpleKanbanBoards.Business.Models.Board
 {
@@ -14,5 +15,6 @@ namespace SimpleKanbanBoards.Business.Models.Board
         public DateOnly Created_At { get; set; }
         public bool Is_Active { get; set; }
         public int ProjectId { get; set; }
+        public IEnumerable<BoardColumnModel> BoardColumns { get; set; } = Enumerable.Empty<BoardColumnModel>();
     }
 }

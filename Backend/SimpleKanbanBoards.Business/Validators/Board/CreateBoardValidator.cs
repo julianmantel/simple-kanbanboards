@@ -10,19 +10,23 @@ namespace SimpleKanbanBoards.Business.Validators.Board
 {
     public class CreateBoardValidator : AbstractValidator<CreateBoardModel>
     {
-        private int minNameLength = BoardValidationRules.BoardNameMinLength;
-        private int maxNameLength = BoardValidationRules.BoardNameMaxLength;
-        private int maxDescriptionLength = BoardValidationRules.BoardDescriptionMaxLength;
+        private int _minNameLength = BoardValidationRules.BoardNameMinLength;
+        private int _maxNameLength = BoardValidationRules.BoardNameMaxLength;
+        private int _maxDescriptionLength = BoardValidationRules.BoardDescriptionMaxLength;
 
         public CreateBoardValidator()
         {
             RuleFor(board => board.Name)
-                .NotEmpty().WithMessage("Board name is required.")
-                .MinimumLength(minNameLength).WithMessage($"Board name must be at least {minNameLength} characters long.")
-                .MaximumLength(maxNameLength).WithMessage($"Board name must not exceed {maxNameLength} characters.");
+                .NotEmpty()
+                    .WithMessage("Board name is required.")
+                .MinimumLength(_minNameLength)
+                    .WithMessage($"Board name must be at least {_minNameLength} characters long.")
+                .MaximumLength(_maxNameLength)
+                    .WithMessage($"Board name must not exceed {_maxNameLength} characters.");
 
             RuleFor(board => board.Description)
-                .MaximumLength(maxDescriptionLength).WithMessage($"Board description must not exceed {maxDescriptionLength} characters.");
+                .MaximumLength(_maxDescriptionLength)
+                    .WithMessage($"Board description must not exceed {_maxDescriptionLength} characters.");
         }
     }
 }

@@ -18,11 +18,13 @@ namespace SimpleKanbanBoards.Business.Validators.Project
             _projectRepository = projectRepository;
 
             RuleFor(x => x.IdDev)
-                .NotEmpty().WithMessage("Developer ID is required.");
+                .NotEmpty()
+                    .WithMessage("Developer ID is required.");
 
 
             RuleFor(x => x.IdProject)
-                .NotEmpty().WithMessage("Project ID is required.");
+                .NotEmpty()
+                    .WithMessage("Project ID is required.");
         }
     }
 }

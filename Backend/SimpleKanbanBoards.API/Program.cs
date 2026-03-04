@@ -68,10 +68,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IResetPasswordRepository, ResetPasswordRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<IBoardColumnRepository, BoardColumnRepository>();
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IBoardService, BoardService>();
+builder.Services.AddScoped<IBoardColumnService, BoardColumnService>();
 
 builder.Services.AddDbContext<DbkanbanContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

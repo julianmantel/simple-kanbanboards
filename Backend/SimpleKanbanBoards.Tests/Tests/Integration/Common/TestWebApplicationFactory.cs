@@ -22,6 +22,7 @@ namespace SimpleKanbanBoards.Tests.Integration.Common
         public Mock<IUserRepository> UserRepositoryMock { get; } = new Mock<IUserRepository>();
         public Mock<IProjectRepository> ProjectRepositoryMock { get; } = new Mock<IProjectRepository>();
 
+        public Mock<IBoardColumnService> BoardColumnServiceMock { get; } = new Mock<IBoardColumnService>();
         public Mock<IBoardService> BoardServiceMock { get; } = new Mock<IBoardService>();
         public Mock<IProjectService> ProjectServiceMock { get; } = new Mock<IProjectService>();
         public Mock<IUserService> UserServiceMock { get; } = new Mock<IUserService>();
@@ -53,6 +54,7 @@ namespace SimpleKanbanBoards.Tests.Integration.Common
                 .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
 
                 // Replace services for testing with mocks
+                RemoveAndReplace(services, BoardColumnServiceMock.Object);
                 RemoveAndReplace(services, BoardServiceMock.Object);
                 RemoveAndReplace(services, ProjectServiceMock.Object);
                 RemoveAndReplace(services, UserServiceMock.Object);

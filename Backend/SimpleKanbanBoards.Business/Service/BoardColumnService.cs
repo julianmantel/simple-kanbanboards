@@ -1,0 +1,126 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SimpleKanbanBoards.Business.Exceptions;
+using SimpleKanbanBoards.Business.Models.BoardColumn;
+using SimpleKanbanBoards.Business.Service.IService;
+using SimpleKanbanBoards.DataAccess.Models;
+using SimpleKanbanBoards.DataAccess.Repository.IRepository;
+using Task = System.Threading.Tasks.Task;
+
+namespace SimpleKanbanBoards.Business.Service
+{
+    public class BoardColumnService : IBoardColumnService
+    {
+        private readonly IBoardColumnRepository _boardColumnRepository;
+        private readonly IBoardRepository _boardRepository;
+
+        public BoardColumnService(IBoardColumnRepository boardColumnRepository, IBoardRepository boardRepository)
+        {
+            _boardColumnRepository = boardColumnRepository;
+            _boardRepository = boardRepository;
+        }
+
+        public async Task CreateBoardColumnAsync(CreateBoardColumnModel boardColumn)
+        {
+            await CheckConflicts(boardColumn.IdBoard, boardColumn.Position, boardColumn.IsEntry, boardColumn.IsDone);
+
+            var newBoardColumn = new BoardColumn
+            {
+                BoardColumnName = boardColumn.Name,
+                ColumnPosition = boardColumn.Position,
+                WipLimit = boardColumn.WipLimit,
+                IsEntry = boardColumn.IsEntry,
+                IsDone = boardColumn.IsDone,
+                IdBoard = boardColumn.IdBoard
+            };
+
+            await _boardColumnRepository.AddAsync(newBoardColumn);
+        }
+
+        public async Task DeleteBoardColumnAsync(int columnId)
+        {
+            var boardColumn = await _boardColumnRepository.GetFirstOrDefault(bc => bc.IdBoardColumn == columnId);
+            if (boardColumn == null)
+            {
+                throw new NotFoundException("Board column not found.");
+            }
+
+            _boardColumnRepository.Remove(boardColumn);
+        }
+
+        public async Task<BoardColumnModel> GetBoardColumnByIdAsync(int boardId)
+        {
+            var boardColumns = await _boardColumnRepository.GetFirstOrDefault(bc => bc.IdBoard == boardId);
+            if (boardColumns == null)
+            {
+                throw new NotFoundException("Board column not found.");
+            }
+
+            return new BoardColumnModel
+            {
+                Id = boardColumns.IdBoardColumn,
+                Name = boardColumns.BoardColumnName,
+                Position = boardColumns.ColumnPosition ?? 0,
+                WipLimit = boardColumns.WipLimit ?? 0,
+                IsEntry = boardColumns.IsEntry ?? false,
+                IsDone = boardColumns.IsDone ?? false,
+                IdBoard = boardColumns.IdBoard ?? 0
+            };
+        }
+
+        public async Task UpdateBoardColumnAsync(UpdateBoardColumnModel boardColumn)
+        {
+            var existingBoardColumn = await _boardColumnRepository.GetFirstOrDefault(bc => bc.IdBoardColumn == boardColumn.Id);
+            if (existingBoardColumn == null)
+            {
+                throw new NotFoundException("Board column not found.");
+            }
+
+            await CheckConflicts(existingBoardColumn.IdBoard ?? 0, boardColumn.Position, boardColumn.IsEntry, boardColumn.IsDone);
+
+            var updatedBoardColumn = new BoardColumn
+            {
+                IdBoardColumn = boardColumn.Id,
+                BoardColumnName = boardColumn.Name,
+                ColumnPosition = boardColumn.Position,
+                WipLimit = boardColumn.WipLimit,
+                IsEntry = boardColumn.IsEntry,
+                IsDone = boardColumn.IsDone,
+                IdBoard = existingBoardColumn.IdBoard
+            };
+
+            _boardColumnRepository.Update(updatedBoardColumn);
+        }
+
+        private async Task CheckConflicts(int idBoard, int columnPosition, bool isEntry, bool isDone)
+        {
+            var boardExists = await _boardRepository.Exist(b => b.IdBoard == idBoard);
+            if (!boardExists)
+            {
+                throw new NotFoundException("Board not found.");
+            }
+
+            var hasPositionConflict = await _boardColumnRepository
+                                                  .Exist(bc => bc.IdBoard == idBoard && bc.ColumnPosition == columnPosition);
+            if (hasPositionConflict)
+            {
+                throw new ConflictException("A column with the same position already exists in the board.");
+            }
+            var existingEntryColumn = await _boardColumnRepository
+                                                  .Exist(bc => bc.IdBoard == idBoard && bc.IsEntry.Value);
+            if (isEntry && existingEntryColumn)
+            {
+                throw new ConflictException("An entry column already exists in the board.");
+            }
+            var existingDoneColumn = await _boardColumnRepository
+                                                  .Exist(bc => bc.IdBoard == idBoard && bc.IsDone.Value);
+            if (isDone && existingDoneColumn)
+            {
+                throw new ConflictException("A done column already exists in the board.");
+            }
+        }
+    }
+}
