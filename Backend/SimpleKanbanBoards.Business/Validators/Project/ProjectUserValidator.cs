@@ -11,12 +11,8 @@ namespace SimpleKanbanBoards.Business.Validators.Project
 {
     public class ProjectUserValidator : AbstractValidator<ProjectUserModel>
     {
-        private readonly IProjectRepository _projectRepository;
-
-        public ProjectUserValidator(IProjectRepository projectRepository)
+        public ProjectUserValidator()
         {
-            _projectRepository = projectRepository;
-
             RuleFor(x => x.IdDev)
                 .NotEmpty()
                     .WithMessage("Developer ID is required.");

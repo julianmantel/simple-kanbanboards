@@ -8,8 +8,8 @@ namespace SimpleKanbanBoards.Business.Validators.Board
 {
     public static class BoardValidationRules
     {
-        public const int BoardNameMinLength = 3;
-        public const int BoardNameMaxLength = 160;
-        public const int BoardDescriptionMaxLength = 500;
+        public const int BOARDNAME_MIN_LENGTH = 3;
+        public const int BOARDNAME_MAX_LENGTH = 160;
+        public const int BOARDDESCRIPTION_MAX_LENGTH = 500;
     }
 }

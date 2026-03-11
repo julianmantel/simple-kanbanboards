@@ -11,8 +11,8 @@ namespace SimpleKanbanBoards.Business.Validators.Project
 {
     public class UpdateProjectValidator : AbstractValidator<UpdateProjectModel>
     {
-        private int maxTitleLength = ProjectValidatonRules.MaxTitleLength;
-        private int maxDescriptionLength = ProjectValidatonRules.MaxDescriptionLength;
+        private int maxTitleLength = ProjectValidatonRules.TITLE_MAX_LENGTH;
+        private int maxDescriptionLength = ProjectValidatonRules.DESCRIPTION_MAX_LENGTH;
 
         public UpdateProjectValidator()
         {

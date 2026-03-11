@@ -10,7 +10,7 @@ namespace SimpleKanbanBoards.Business.Validators.BoardColumn
 {
     public class UpdateBoardColumnValidator : AbstractValidator<UpdateBoardColumnModel>
     {
-        private int _maxNameLength = BoardColumnValidationRules.MaxNameLength;
+        private int _maxNameLength = BoardColumnValidationRules.MAX_NAME_LENGTH;
 
         public UpdateBoardColumnValidator()
         {

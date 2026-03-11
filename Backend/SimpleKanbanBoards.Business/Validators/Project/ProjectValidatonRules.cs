@@ -8,7 +8,7 @@ namespace SimpleKanbanBoards.Business.Validators.Project
 {
     public static class ProjectValidatonRules
     {
-        public const int MaxTitleLength = 50;
-        public const int MaxDescriptionLength = 500;
+        public const int TITLE_MAX_LENGTH = 50;
+        public const int DESCRIPTION_MAX_LENGTH = 500;
     }
 }

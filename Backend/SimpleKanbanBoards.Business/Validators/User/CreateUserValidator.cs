@@ -12,15 +12,12 @@ namespace SimpleKanbanBoards.Business.Validators.User
 {
     public class CreateUserValidator : AbstractValidator<CreateUserModel>
     {
-        private readonly IUserRepository _userRepository;
-        private int _minUserNameLength = UserValidationRules.MinUserNameLength;
-        private int _maxUserNameLength = UserValidationRules.MaxUserNameLength;
-        private int _minPasswordLength = UserValidationRules.MinPasswordLength;
+        private int _minUserNameLength = UserValidationRules.USERNAME_MIN_LENGTH;
+        private int _maxUserNameLength = UserValidationRules.USERNAME_MAX_LENGTH;
+        private int _minPasswordLength = UserValidationRules.PASSWORD_MIN_LENGTH;
 
-        public CreateUserValidator(IUserRepository userRepository)
+        public CreateUserValidator()
         {
-            _userRepository = userRepository;
-
             RuleFor(x => x.UserName)
                 .NotEmpty()
                     .WithMessage("UserName is required.")

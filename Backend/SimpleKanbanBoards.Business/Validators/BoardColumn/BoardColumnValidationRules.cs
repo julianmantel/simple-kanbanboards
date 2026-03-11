@@ -8,6 +8,6 @@ namespace SimpleKanbanBoards.Business.Validators.BoardColumn
 {
     public static class BoardColumnValidationRules
     {
-        public const int MaxNameLength = 160;
+        public const int MAX_NAME_LENGTH = 160;
     }
 }

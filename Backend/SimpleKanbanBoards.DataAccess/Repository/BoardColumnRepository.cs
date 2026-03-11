@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SimpleKanbanBoards.DataAccess.Models;
 using SimpleKanbanBoards.DataAccess.Repository.IRepository;
 
 namespace SimpleKanbanBoards.DataAccess.Repository
 {
-    public class BoardColumnRepository(DbkanbanContext context) : RepositoryBase<BoardColumn>(context), IBoardColumnRepository {}
+    public class BoardColumnRepository(DbkanbanContext context) : RepositoryBase<BoardColumn>(context), IBoardColumnRepository { }
 }

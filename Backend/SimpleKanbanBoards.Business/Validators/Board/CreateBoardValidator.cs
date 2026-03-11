@@ -10,9 +10,9 @@ namespace SimpleKanbanBoards.Business.Validators.Board
 {
     public class CreateBoardValidator : AbstractValidator<CreateBoardModel>
     {
-        private int _minNameLength = BoardValidationRules.BoardNameMinLength;
-        private int _maxNameLength = BoardValidationRules.BoardNameMaxLength;
-        private int _maxDescriptionLength = BoardValidationRules.BoardDescriptionMaxLength;
+        private int _minNameLength = BoardValidationRules.BOARDNAME_MIN_LENGTH;
+        private int _maxNameLength = BoardValidationRules.BOARDNAME_MAX_LENGTH;
+        private int _maxDescriptionLength = BoardValidationRules.BOARDDESCRIPTION_MAX_LENGTH;
 
         public CreateBoardValidator()
         {

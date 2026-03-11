@@ -10,7 +10,7 @@ namespace SimpleKanbanBoards.Business.Validators.User
 {
     public class ChangePasswordValidator : AbstractValidator<ChangePasswordModel>
     {
-        private int _minPasswordLength = UserValidationRules.MinPasswordLength;
+        private int _minPasswordLength = UserValidationRules.PASSWORD_MIN_LENGTH;
         public ChangePasswordValidator()
         {
 

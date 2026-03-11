@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SimpleKanbanBoards.Business.Exceptions;
 using SimpleKanbanBoards.Business.Models.BoardColumn;
+using SimpleKanbanBoards.Business.Models.Task;
 using SimpleKanbanBoards.Business.Service.IService;
 using SimpleKanbanBoards.DataAccess.Models;
 using SimpleKanbanBoards.DataAccess.Repository.IRepository;
@@ -67,7 +68,19 @@ namespace SimpleKanbanBoards.Business.Service
                 WipLimit = boardColumns.WipLimit ?? 0,
                 IsEntry = boardColumns.IsEntry ?? false,
                 IsDone = boardColumns.IsDone ?? false,
-                IdBoard = boardColumns.IdBoard ?? 0
+                IdBoard = boardColumns.IdBoard ?? 0,
+                Tasks = boardColumns.Tasks.Select(t => new TaskModel
+                {
+                    Id = t.IdTask,
+                    IdUser = t.IdUser ?? 0,
+                    IdBoardColumn = t.IdBoardColumn ?? 0,
+                    Title = t.Title,
+                    Description = t.Description,
+                    CreatedAt = t.CreatedAt ?? DateTime.Now,
+                    CompletedAt = t.CompletedAt,
+                    Priority = t.Priority ?? 0,
+                    ServiceClass = t.ServiceClass,
+                }).ToList()
             };
         }
 
