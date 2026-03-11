@@ -13,6 +13,10 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Board
     public class CreateBoardValidatorTests
     {
         private readonly CreateBoardValidator _validator = new();
+        private int BoardNameMinLength => BoardValidationRules.BOARDNAME_MIN_LENGTH;
+        private int BoardNameMaxLength => BoardValidationRules.BOARDNAME_MAX_LENGTH;
+        private int BoardDescriptionMaxLength => BoardValidationRules.BOARDDESCRIPTION_MAX_LENGTH;
+
 
         [Fact]
         public void ShouldHaveError_WhenNameIsEmpty()
@@ -29,16 +33,16 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Board
             var model = new CreateBoardModel { Name = "Ab" }; // 2 chars < minLength=3
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Name)
-                  .WithErrorMessage($"Board name must be at least {BoardValidationRules.BoardNameMinLength} characters long.");
+                  .WithErrorMessage($"Board name must be at least {BoardNameMinLength} characters long.");
         }
 
         [Fact]
         public void ShouldHaveError_WhenNameIsTooLong()
         {
-            var model = new CreateBoardModel { Name = new string('A', BoardValidationRules.BoardNameMaxLength + 1) };
+            var model = new CreateBoardModel { Name = new string('A', BoardNameMaxLength + 1) };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Name)
-                  .WithErrorMessage($"Board name must not exceed {BoardValidationRules.BoardNameMaxLength} characters.");
+                  .WithErrorMessage($"Board name must not exceed {BoardNameMaxLength} characters.");
         }
 
         [Fact]
@@ -47,7 +51,7 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Board
             var model = new CreateBoardModel
             {
                 Name = "Valid Name",
-                Description = new string('X', BoardValidationRules.BoardDescriptionMaxLength + 1)
+                Description = new string('X', BoardDescriptionMaxLength + 1)
             };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Description);
@@ -67,6 +71,14 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Board
         {
             var model = new CreateBoardModel { Name = "Sprint 1", Description = "" };
 
+            var result = _validator.TestValidate(model);
+            result.ShouldNotHaveValidationErrorFor(x => x.Description);
+        }
+
+        [Fact]
+        public void ShouldNotHaveError_WhenDescriptionIsNull()
+        {
+            var model = new CreateBoardModel { Name = "Sprint 1", Description = null };
             var result = _validator.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Description);
         }

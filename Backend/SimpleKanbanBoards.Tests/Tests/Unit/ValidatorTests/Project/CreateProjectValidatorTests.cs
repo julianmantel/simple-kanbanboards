@@ -13,6 +13,8 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Project
     public class CreateProjectValidatorTests
     {
         private readonly CreateProjectValidator _validator = new();
+        private int MaxTitleLength => ProjectValidatonRules.TITLE_MAX_LENGTH;
+        private int MaxDescriptionLength => ProjectValidatonRules.DESCRIPTION_MAX_LENGTH;
 
         [Fact]
         public void ShouldHaveError_WhenTitleIsEmpty()
@@ -28,7 +30,7 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Project
         {
             var model = new CreateProjectModel
             {
-                Title = new string('T', ProjectValidatonRules.MaxTitleLength + 1),
+                Title = new string('T', MaxTitleLength + 1),
                 Description = "Desc",
                 MaxDevs = 2
             };
@@ -68,6 +70,20 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Project
             var model = new CreateProjectModel { Title = "My Project", Description = "A description", MaxDevs = 5 };
             var result = _validator.TestValidate(model);
             result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        [Fact]
+        public void ShouldHaveError_WhenDescriptionExceedsMaxLength()
+        {
+            var model = new CreateProjectModel
+            {
+                Title = "Valid Title",
+                Description = new string('D', MaxDescriptionLength + 1),
+                MaxDevs = 3
+            };
+            var result = _validator.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.Description)
+                  .WithErrorMessage($"Project description must not exceed {MaxDescriptionLength} characters.");
         }
     }
 }

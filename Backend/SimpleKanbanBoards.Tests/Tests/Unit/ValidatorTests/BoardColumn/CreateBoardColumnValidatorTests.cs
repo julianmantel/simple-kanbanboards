@@ -14,6 +14,8 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.BoardColumn
     {
         private readonly CreateBoardColumnValidator _validator = new();
 
+        private int MaxNameLength => BoardColumnValidationRules.MAX_NAME_LENGTH;
+
         [Fact]
         public void ShouldHaveError_WhenNameIsEmpty()
         {
@@ -26,10 +28,10 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.BoardColumn
         [Fact]
         public void ShouldHaveError_WhenNameIsTooLong()
         {
-            var model = new CreateBoardColumnModel { Name = new string('K', BoardColumnValidationRules.MaxNameLength + 1) };
+            var model = new CreateBoardColumnModel { Name = new string('K', MaxNameLength + 1) };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Name)
-                  .WithErrorMessage($"Column name cannot exceed {BoardColumnValidationRules.MaxNameLength} characters.");
+                  .WithErrorMessage($"Column name cannot exceed {MaxNameLength} characters.");
         }
 
         [Fact]

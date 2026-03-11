@@ -14,13 +14,7 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.Project
 {
     public class ProjectUserValidatorTests
     {
-        private readonly ProjectUserValidator _validator;
-
-        public ProjectUserValidatorTests()
-        {
-            var repoMock = new Mock<IProjectRepository>();
-            _validator = new ProjectUserValidator(repoMock.Object);
-        }
+        private readonly ProjectUserValidator _validator = new();
 
         [Fact]
         public void ShouldHaveError_WhenIdDevIsZero()

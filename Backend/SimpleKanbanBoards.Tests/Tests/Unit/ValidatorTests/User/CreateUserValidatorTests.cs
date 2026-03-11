@@ -14,22 +14,23 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.User
 {
     public class CreateUserValidatorTests
     {
-        private readonly CreateUserValidator _validator;
+        private readonly CreateUserValidator _validator = new();
+        private int MinUserNameLength => UserValidationRules.USERNAME_MIN_LENGTH;
+        private int MaxUserNameLength => UserValidationRules.USERNAME_MAX_LENGTH;
 
-        public CreateUserValidatorTests()
+        [Fact]
+        public void ShouldHaveError_WhenUserNameIsTooShort()
         {
-            var repoMock = new Mock<IUserRepository>();
-            _validator = new CreateUserValidator(repoMock.Object);
-        }
+            var model = new CreateUserModel
+            {
+                UserName = new string('u', MinUserNameLength - 1),
+                Password = "Pass1A",
+                Email = "a@b.com"
+            };
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("ab")] // too short (< 3)
-        public void ShouldHaveError_WhenUserNameIsInvalid(string userName)
-        {
-            var model = new CreateUserModel { UserName = userName, Password = "Pass1A", Email = "a@b.com", Roles = new List<int>() };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.UserName);
+
         }
 
         [Fact]
@@ -37,7 +38,7 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.User
         {
             var model = new CreateUserModel
             {
-                UserName = new string('u', UserValidationRules.MaxUserNameLength + 1),
+                UserName = new string('u', MaxUserNameLength + 1),
                 Password = "Pass1A",
                 Email = "a@b.com",
                 Roles = new List<int>()
