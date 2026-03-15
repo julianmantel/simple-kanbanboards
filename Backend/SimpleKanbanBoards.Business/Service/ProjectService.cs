@@ -116,6 +116,27 @@ namespace SimpleKanbanBoards.Business.Service
             return projectModel;
         }
 
+        public async Task<IEnumerable<ProjectModel>> GetAllProjectsAsync()
+        {
+            var projects = await _projectRepository.GetAll();
+            return projects.Select(p => new ProjectModel
+            {
+                Id = p.IdProject,
+                Title = p.Title,
+                Description = p.Description,
+                StartDate = p.StartDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
+                EndDate = p.EndDate,
+                MaxDevs = p.MaxDevs ?? 1,
+                Boards = p.Boards.Select(b => new BoardModel
+                {
+                    Id = b.IdBoard,
+                    Name = b.BoardName,
+                    Description = b.Description,
+                    Created_At = b.CreatedAt ?? DateOnly.FromDateTime(DateTime.UtcNow)
+                }).ToList()
+            }).ToList();
+        }
+
         public async Task DeleteProjectAsync(int projectId)
         {
             var project = await _projectRepository.GetFirstOrDefault(p => p.IdProject == projectId);

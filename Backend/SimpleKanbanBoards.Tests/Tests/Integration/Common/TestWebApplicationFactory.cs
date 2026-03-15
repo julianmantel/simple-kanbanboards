@@ -21,11 +21,13 @@ namespace SimpleKanbanBoards.Tests.Integration.Common
     {
         public Mock<IUserRepository> UserRepositoryMock { get; } = new Mock<IUserRepository>();
         public Mock<IProjectRepository> ProjectRepositoryMock { get; } = new Mock<IProjectRepository>();
+        public Mock<ITaskRepository> TaskRepositoryMock { get; } = new Mock<ITaskRepository>();
 
         public Mock<IBoardColumnService> BoardColumnServiceMock { get; } = new Mock<IBoardColumnService>();
         public Mock<IBoardService> BoardServiceMock { get; } = new Mock<IBoardService>();
         public Mock<IProjectService> ProjectServiceMock { get; } = new Mock<IProjectService>();
         public Mock<IUserService> UserServiceMock { get; } = new Mock<IUserService>();
+        public Mock<ITaskService> TaskServiceMock { get; } = new Mock<ITaskService>();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -58,9 +60,11 @@ namespace SimpleKanbanBoards.Tests.Integration.Common
                 RemoveAndReplace(services, BoardServiceMock.Object);
                 RemoveAndReplace(services, ProjectServiceMock.Object);
                 RemoveAndReplace(services, UserServiceMock.Object);
+                RemoveAndReplace(services, TaskServiceMock.Object);
 
                 RemoveAndReplace<IUserRepository>(services, UserRepositoryMock.Object);
                 RemoveAndReplace<IProjectRepository>(services, ProjectRepositoryMock.Object);
+                RemoveAndReplace<ITaskRepository>(services, TaskRepositoryMock.Object);
             });
 
             builder.UseEnvironment("Development");

@@ -10,6 +10,7 @@ namespace SimpleKanbanBoards.Business.Service.IService
     public interface IProjectService
     {
         Task<ProjectModel> GetProjectByIDAsync(int projectId);
+        Task<IEnumerable<ProjectModel>> GetAllProjectsAsync();
         Task CreateProjectAsync(CreateProjectModel project);
         Task AddDevToProjectAsync(ProjectUserModel request);
         Task DeleteProjectAsync(int projectId);

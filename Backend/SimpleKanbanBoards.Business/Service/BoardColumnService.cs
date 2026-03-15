@@ -84,6 +84,38 @@ namespace SimpleKanbanBoards.Business.Service
             };
         }
 
+        public async Task<IEnumerable<BoardColumnModel>> GetBoardColumnsByBoardIdAsync(int boardId)
+        {
+            var boardColumns = await _boardColumnRepository.GetAll(bc => bc.IdBoard == boardId);
+            if (boardColumns == null || !boardColumns.Any())
+            {
+                throw new NotFoundException("No board columns found for the specified board.");
+            }
+
+            return boardColumns.Select(bc => new BoardColumnModel
+            {
+                Id = bc.IdBoardColumn,
+                Name = bc.BoardColumnName,
+                Position = bc.ColumnPosition ?? 0,
+                WipLimit = bc.WipLimit ?? 0,
+                IsEntry = bc.IsEntry ?? false,
+                IsDone = bc.IsDone ?? false,
+                IdBoard = bc.IdBoard ?? 0,
+                Tasks = bc.Tasks.Select(t => new TaskModel
+                {
+                    Id = t.IdTask,
+                    IdUser = t.IdUser ?? 0,
+                    IdBoardColumn = t.IdBoardColumn ?? 0,
+                    Title = t.Title,
+                    Description = t.Description,
+                    CreatedAt = t.CreatedAt ?? DateTime.Now,
+                    CompletedAt = t.CompletedAt,
+                    Priority = t.Priority ?? 0,
+                    ServiceClass = t.ServiceClass,
+                }).ToList()
+            }).ToList();
+        }
+
         public async Task UpdateBoardColumnAsync(UpdateBoardColumnModel boardColumn)
         {
             var existingBoardColumn = await _boardColumnRepository.GetFirstOrDefault(bc => bc.IdBoardColumn == boardColumn.Id);

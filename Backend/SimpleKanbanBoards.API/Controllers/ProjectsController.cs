@@ -18,6 +18,13 @@ namespace SimpleKanbanBoards.API.Controllers
             _projectService = projectService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllProjects()
+        {
+            var projects = await _projectService.GetAllProjectsAsync();
+            return Ok(ApiResult<IEnumerable<ProjectModel>>.Success(projects));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProjectById(int id)
         {

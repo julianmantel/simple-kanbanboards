@@ -12,6 +12,7 @@ namespace SimpleKanbanBoards.Business.Service.IService
         Task CreateBoardAsync(BoardModel board);
         Task UpdateBoardAsync(UpdateBoardModel board);
         Task<BoardModel> GetBoardByIdAsync(int boardId);
+        Task<IEnumerable<BoardModel>> GetBoardsByProjectIdAsync(int projectId);
         Task ToggleBoardAsync(int boardId);
     }
 }

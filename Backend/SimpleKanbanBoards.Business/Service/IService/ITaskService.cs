@@ -13,6 +13,7 @@ namespace SimpleKanbanBoards.Business.Service.IService
         Task UpdateTask(UpdateTaskModel task);
         Task DeleteTask(int id);
         Task<TaskModel> GetTaskById(int id);
+        Task<IEnumerable<TaskModel>> GetTasksByColumnIdAsync(int columnId);
         Task AddUserTask(UserTaskModel userTask);
     }
 }

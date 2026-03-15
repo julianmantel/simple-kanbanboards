@@ -99,6 +99,28 @@ namespace SimpleKanbanBoards.Business.Service
             };
         }
 
+        public async Task<IEnumerable<TaskModel>> GetTasksByColumnIdAsync(int columnId)
+        {
+            var tasks = await _taskRepository.GetAll(t => t.IdBoardColumn == columnId);
+            if(tasks == null || !tasks.Any())
+            {
+                throw new NotFoundException("No tasks found for the specified column.");
+            }
+
+            return tasks.Select(task => new TaskModel
+            {
+                Id = task.IdTask,
+                IdUser = task.IdUser ?? 0,
+                IdBoardColumn = task.IdBoardColumn ?? 0,
+                Title = task.Title ?? "Tittle",
+                Description = task.Description ?? string.Empty,
+                CreatedAt = task.CreatedAt ?? DateTime.MinValue,
+                CompletedAt = task.CompletedAt,
+                Priority = task.Priority ?? 0,
+                ServiceClass = task.ServiceClass
+            }).ToList();
+        }
+
         public async Task UpdateTask(UpdateTaskModel task)
         {
             var oldTask = await _taskRepository.GetFirstOrDefault(t => t.IdTask == task.Id);
@@ -130,7 +152,7 @@ namespace SimpleKanbanBoards.Business.Service
             bool hasReachedLimit = await _taskRepository.CountTasksInColumnAsync(boardColumnId) >= boardColumn.WipLimit;
             bool isEntryOrDoneColumn = boardColumn.IsEntry == true || boardColumn.IsDone == true;
             bool isExpedite = (serviceClass == "Expedite");
-            if (hasReachedLimit && !isEntryOrDoneColumn)
+            if (hasReachedLimit && !isEntryOrDoneColumn && !isExpedite)
             {
                 throw new ConflictException("Cannot move task. WIP limit for the column has been reached.");
             }

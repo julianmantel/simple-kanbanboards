@@ -82,6 +82,34 @@ namespace SimpleKanbanBoards.Business.Service
             };
         }
 
+        public async Task<IEnumerable<BoardModel>> GetBoardsByProjectIdAsync(int projectId)
+        {
+            var boards = await _boardRepository.GetAll(b => b.IdProject == projectId);
+            if(boards == null || !boards.Any())
+            {
+                throw new NotFoundException("No boards found for the given project.");
+            }
+
+            return boards.Select(board => new BoardModel
+            {
+                Id = board.IdBoard,
+                Name = board.BoardName,
+                Description = board.Description,
+                Created_At = board.CreatedAt ?? DateOnly.FromDateTime(DateTime.Now),
+                Is_Active = board.IsActive ?? false,
+                ProjectId = board.IdProject ?? 0,
+                BoardColumns = board.BoardColumns.Select(c => new BoardColumnModel
+                {
+                    Id = c.IdBoardColumn,
+                    Name = c.BoardColumnName,
+                    Position = c.ColumnPosition ?? 0,
+                    WipLimit = c.WipLimit ?? 0,
+                    IsEntry = c.IsEntry ?? false,
+                    IsDone = c.IsDone ?? false
+                }).ToList()
+            }).ToList();
+        }
+
         public async Task UpdateBoardAsync(UpdateBoardModel updateBoard)
         {
             var board = await _boardRepository.GetFirstOrDefault(b => b.IdBoard == updateBoard.Id);

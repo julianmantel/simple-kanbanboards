@@ -19,10 +19,22 @@ namespace SimpleKanbanBoards.API.Controllers
             _taskService = taskService;
         }
 
+        [HttpGet("boardcolumn/{columnId}")]
+        public async Task<IActionResult> GetTasksByBoardColumnId(int columnId)
+        {
+            var tasks = await _taskService.GetTasksByColumnIdAsync(columnId);
+            return Ok(ApiResult<IEnumerable<TaskModel>>.Success(tasks));
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById(int id)
         {
             var task = await _taskService.GetTaskById(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
             return Ok(ApiResult<TaskModel>.Success(task));
         }
 

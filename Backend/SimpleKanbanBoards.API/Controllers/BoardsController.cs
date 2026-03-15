@@ -19,6 +19,13 @@ namespace SimpleKanbanBoards.API.Controllers
             _boardService = boardService;
         }
 
+        [HttpGet("project/{projectId}")]
+        public async Task<IActionResult> GetBoardsByProjectId(int projectId)
+        {
+            var boards = await _boardService.GetBoardsByProjectIdAsync(projectId);
+            return Ok(ApiResult<IEnumerable<BoardModel>>.Success(boards));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBoardById(int id)
         {
