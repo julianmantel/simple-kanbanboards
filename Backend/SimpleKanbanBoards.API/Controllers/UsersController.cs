@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SimpleKanbanBoards.Business.Models;
+using SimpleKanbanBoards.Business.Models.Role;
 using SimpleKanbanBoards.Business.Models.User;
 using SimpleKanbanBoards.Business.Service.IService;
+using System.Security.Claims;
 
 namespace SimpleKanbanBoards.API.Controllers
 {
@@ -16,7 +19,7 @@ namespace SimpleKanbanBoards.API.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{id}")] 
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
@@ -35,8 +38,18 @@ namespace SimpleKanbanBoards.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestModel request)
         {
-            SetTokenCookie(await _userService.LoginAsync(request));
-            return Ok(ApiResult<string>.Success("Successful login"));
+            var token = await _userService.LoginAsync(request);
+
+            SetTokenCookie(token);
+            return Ok(ApiResult<string>.Success(token));
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("Token");
+            return Ok(ApiResult<string>.Success("Successful logout"));
         }
 
         [HttpPost("reset-password")]
@@ -60,14 +73,40 @@ namespace SimpleKanbanBoards.API.Controllers
             return Ok(ApiResult<string>.Success("User deleted successfully"));
         }
 
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUserAsync()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            var user = await _userService.GetUserByIdAsync(userId);
+
+            return Ok(ApiResult<UserModel>.Success(user));
+        }
+
+        [HttpPost("change-roles")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeTokenRolesAsync([FromBody] UserModel request)
+        {
+            var newToken = await _userService.ChangeTokenRolesAsync(request);
+            SetTokenCookie(newToken);
+
+            return Ok(ApiResult<string>.Success("Token roles changed successfully"));
+        }
+
         private void SetTokenCookie(string token)
         {
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,    
-                Secure = true,      
-                SameSite = SameSiteMode.Strict, 
-                Expires = DateTime.UtcNow.AddMinutes(30) 
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("Token", token, cookieOptions);
         }

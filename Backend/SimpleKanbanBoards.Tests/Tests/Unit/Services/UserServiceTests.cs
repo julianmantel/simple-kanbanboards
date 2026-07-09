@@ -23,6 +23,7 @@ public class UserServiceTests
     private readonly Mock<IUserRepository> _userRepoMock;
     private readonly Mock<IResetPasswordRepository> _resetPassRepoMock;
     private readonly Mock<IEmailService> _emailServiceMock;
+    private readonly Mock<IRoleRepository> _roleRepoMock;
     private readonly Mock<IEmailTemplateBuilder> _templateBuilderMock;
     private readonly IConfiguration _configuration;
     private readonly UserService _sut;
@@ -32,6 +33,7 @@ public class UserServiceTests
         _userRepoMock = new Mock<IUserRepository>();
         _resetPassRepoMock = new Mock<IResetPasswordRepository>();
         _emailServiceMock = new Mock<IEmailService>();
+        _roleRepoMock = new Mock<IRoleRepository>();
         _templateBuilderMock = new Mock<IEmailTemplateBuilder>();
 
         var settings = new Dictionary<string, string>
@@ -48,6 +50,7 @@ public class UserServiceTests
 
         _sut = new UserService(
             _userRepoMock.Object,
+            _roleRepoMock.Object,
             _configuration,
             _resetPassRepoMock.Object,
             _emailServiceMock.Object,
@@ -105,6 +108,10 @@ public class UserServiceTests
         };
         _userRepoMock.Setup(r => r.Exist(It.IsAny<Expression<Func<User, bool>>>()))
                      .ReturnsAsync(false);
+        _roleRepoMock.Setup(r => r.GetAll(It.IsAny<Expression<Func<Role, bool>>>(),
+                                          It.IsAny<Func<IQueryable<Role>, IOrderedQueryable<Role>>>(),
+                                          It.IsAny<Expression<Func<Role, object>>[]>()))
+                     .ReturnsAsync(new List<Role> { new Role { IdRol = 1, RolName = "Admin" } });
 
         await _sut.CreateUserAsync(model);
 

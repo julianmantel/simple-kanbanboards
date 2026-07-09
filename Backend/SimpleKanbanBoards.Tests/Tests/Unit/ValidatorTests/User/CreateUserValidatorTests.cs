@@ -17,6 +17,7 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.User
         private readonly CreateUserValidator _validator = new();
         private int MinUserNameLength => UserValidationRules.USERNAME_MIN_LENGTH;
         private int MaxUserNameLength => UserValidationRules.USERNAME_MAX_LENGTH;
+        private int MinPasswordLength => UserValidationRules.PASSWORD_MIN_LENGTH;
 
         [Fact]
         public void ShouldHaveError_WhenUserNameIsTooShort()
@@ -77,9 +78,25 @@ namespace SimpleKanbanBoards.Tests.Unit.ValidatorTests.User
         [Fact]
         public void ShouldNotHaveErrors_WhenModelIsValid()
         {
-            var model = new CreateUserModel { UserName = "johndoe", Password = "Pass1A", Email = "john@email.com", Roles = new List<int> { 1 } };
+            var model = new CreateUserModel { UserName = "johndoe", Password = "Pass123ABC", Email = "john@email.com", Roles = new List<int> { 1 } };
             var result = _validator.TestValidate(model);
             result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        [Fact]
+        public void ShouldHaveError_WhenPasswordIsTooShort()
+        {
+            var model = new CreateUserModel
+            {
+                UserName = "validUser",
+                Password = new string('p', MinPasswordLength - 1),
+                Email = ""
+            };
+
+            var result = _validator.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.Password)
+                  .WithErrorMessage($"Password must be at least {MinPasswordLength} characters long.");
+
         }
     }
 }

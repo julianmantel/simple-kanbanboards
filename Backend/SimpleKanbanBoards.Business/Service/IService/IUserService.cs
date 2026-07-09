@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SimpleKanbanBoards.Business.Models.Role;
 using SimpleKanbanBoards.Business.Models.User;
 
 namespace SimpleKanbanBoards.Business.Service.IService
@@ -15,5 +16,6 @@ namespace SimpleKanbanBoards.Business.Service.IService
         Task ResetPasswordAsync(ResetPassRequestModel request);
         Task ChangePasswordAsync(ChangePasswordModel request);
         Task DeleteUserAsync(int id);
+        Task<string> ChangeTokenRolesAsync(UserModel request);
     }
 }

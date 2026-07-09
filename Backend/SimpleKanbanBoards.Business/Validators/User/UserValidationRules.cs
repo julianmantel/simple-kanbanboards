@@ -10,6 +10,6 @@ namespace SimpleKanbanBoards.Business.Validators.User
     {
         public const int USERNAME_MIN_LENGTH = 3;
         public const int USERNAME_MAX_LENGTH = 25;
-        public const int PASSWORD_MIN_LENGTH = 4;
+        public const int PASSWORD_MIN_LENGTH = 8;
     }
 }

@@ -22,6 +22,7 @@ namespace SimpleKanbanBoards.Business.Service
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly IConfiguration _configuration;
         private readonly IResetPasswordRepository _resetPasswordRepository;
         private readonly IEmailService _emailService;
@@ -30,13 +31,15 @@ namespace SimpleKanbanBoards.Business.Service
         private const int EXPIRE_RESET_TOKEN_MINUTES = 5;
 
         public UserService(
-            IUserRepository userRepository, 
+            IUserRepository userRepository,
+            IRoleRepository roleRepository,
             IConfiguration configuration, 
             IResetPasswordRepository resetPasswordRepository, 
             IEmailService emailService,
             IEmailTemplateBuilder emailTemplateBuilder)
         {
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
             _configuration = configuration;
             _resetPasswordRepository = resetPasswordRepository;
             _emailService = emailService;
@@ -73,13 +76,21 @@ namespace SimpleKanbanBoards.Business.Service
             }
 
             AuthUtil.CreatePasswordHash(newUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var roles = await _roleRepository.GetAll(r => newUser.Roles.Contains(r.IdRol));
+
+            if (!roles.Any())
+            {
+                throw new NotFoundException("One or more roles not found.");
+            }
+
             var user = new User
             {
                 Username = newUser.UserName,
                 Email = newUser.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                IdRols = newUser.Roles.Select(roleId => new Role { IdRol = roleId }).ToList()
+                IdRols = roles.ToList()
             };
 
             await _userRepository.AddAsync(user);
@@ -173,6 +184,27 @@ namespace SimpleKanbanBoards.Business.Service
             }
 
             _userRepository.Remove(user);
+        }
+
+        public async Task<string> ChangeTokenRolesAsync(UserModel user)
+        {
+            var existingUser = await _userRepository.GetFirstOrDefault(u => u.IdUser == user.Id, u => u.IdRols);
+            if (existingUser == null)
+            {
+                throw new NotFoundException("User not found.");
+            }
+
+            if(user.Roles == null || !user.Roles.Any())
+            {
+                throw new BadRequestException("User must have at least one role.");
+            }
+
+            var roles = await _roleRepository.GetAll(r => user.Roles.Select(role => role.Id).Contains(r.IdRol));
+            existingUser.IdRols = roles.ToList();
+
+            _userRepository.Update(existingUser);
+
+            return JwtUtil.GenerateToken(user, _configuration);
         }
     }
 }

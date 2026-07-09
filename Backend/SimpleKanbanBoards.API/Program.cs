@@ -4,8 +4,6 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SimpleKanbanBoards.API.Middlewares;
 using SimpleKanbanBoards.Business.Models;
@@ -17,6 +15,7 @@ using SimpleKanbanBoards.Business.Validators;
 using SimpleKanbanBoards.DataAccess.Models;
 using SimpleKanbanBoards.DataAccess.Repository;
 using SimpleKanbanBoards.DataAccess.Repository.IRepository;
+using Task = System.Threading.Tasks.Task;
 
 DotNetEnv.Env.Load();
 
@@ -55,6 +54,18 @@ builder.Services.AddAuthentication(options => {
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (context.Request.Cookies.ContainsKey("Token"))
+                {
+                    context.Token = context.Request.Cookies["Token"];
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -65,6 +76,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<IEmailTemplateBuilder, EmailTemplateBuilder>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IResetPasswordRepository, ResetPasswordRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
@@ -73,6 +85,7 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IBoardColumnService, BoardColumnService>();
@@ -94,22 +107,41 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAntiforgery();
-app.MapControllers();
+
+
+app.UseCors("AllowFrontend");
+
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseAntiforgery();
+
+app.MapControllers();
 
 app.Run();
 

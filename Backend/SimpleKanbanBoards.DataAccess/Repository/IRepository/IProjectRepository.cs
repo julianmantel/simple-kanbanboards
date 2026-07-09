@@ -11,7 +11,8 @@ namespace SimpleKanbanBoards.DataAccess.Repository.IRepository
     public interface IProjectRepository : IRepositoryBase<Project>
     {
         Task AddUserProject(UserProject userProject);
+        Task<IEnumerable<Project>> GetProjectsByUserIdAsync(int userId);
         int CountUsers(int projectID);
-        Task<bool> IsUserInProject(int userId);
+        Task<bool> IsUserInProject(int userId, int projectId);
     }
 }

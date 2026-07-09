@@ -103,7 +103,7 @@ public class ProjectServiceTests
 
         _userRepoMock.Setup(r => r.Exist(It.IsAny<Expression<Func<User, bool>>>()))
                      .ReturnsAsync(true);
-        _projectRepoMock.Setup(r => r.IsUserInProject(It.IsAny<int>())).ReturnsAsync(false);
+        _projectRepoMock.Setup(r => r.IsUserInProject(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(false);
         _projectRepoMock.Setup(r => r.CountUsers(It.IsAny<int>())).Returns(0);
 
         await _sut.CreateProjectAsync(model);
@@ -141,7 +141,7 @@ public class ProjectServiceTests
             .ReturnsAsync(project);
         _userRepoMock.Setup(r => r.Exist(It.IsAny<Expression<Func<User, bool>>>()))
                      .ReturnsAsync(true);
-        _projectRepoMock.Setup(r => r.IsUserInProject(2)).ReturnsAsync(false);
+        _projectRepoMock.Setup(r => r.IsUserInProject(2, 1)).ReturnsAsync(false);
         _projectRepoMock.Setup(r => r.CountUsers(1)).Returns(2);
 
         await _sut.AddDevToProjectAsync(request);
@@ -190,7 +190,7 @@ public class ProjectServiceTests
             .ReturnsAsync(new Project { IdProject = 1, MaxDevs = 5 });
         _userRepoMock.Setup(r => r.Exist(It.IsAny<Expression<Func<User, bool>>>()))
                      .ReturnsAsync(true);
-        _projectRepoMock.Setup(r => r.IsUserInProject(2)).ReturnsAsync(true);
+        _projectRepoMock.Setup(r => r.IsUserInProject(2, 1)).ReturnsAsync(true);
 
         var act = async () => await _sut.AddDevToProjectAsync(request);
 
@@ -207,7 +207,7 @@ public class ProjectServiceTests
             .ReturnsAsync(new Project { IdProject = 1, MaxDevs = 2 });
         _userRepoMock.Setup(r => r.Exist(It.IsAny<Expression<Func<User, bool>>>()))
                      .ReturnsAsync(true);
-        _projectRepoMock.Setup(r => r.IsUserInProject(2)).ReturnsAsync(false);
+        _projectRepoMock.Setup(r => r.IsUserInProject(2, 1)).ReturnsAsync(false);
         _projectRepoMock.Setup(r => r.CountUsers(1)).Returns(3);
 
         var act = async () => await _sut.AddDevToProjectAsync(request);

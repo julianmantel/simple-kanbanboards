@@ -39,7 +39,7 @@ namespace SimpleKanbanBoards.Business.Service
                 throw new NotFoundException("User does not exist.");
             }
 
-            var isUserInProject = await _projectRepository.IsUserInProject(request.IdDev);
+            var isUserInProject = await _projectRepository.IsUserInProject(request.IdDev, request.IdProject);
             if(isUserInProject)
             {
                 throw new ConflictException("User is already assigned to this project.");
@@ -119,6 +119,27 @@ namespace SimpleKanbanBoards.Business.Service
         public async Task<IEnumerable<ProjectModel>> GetAllProjectsAsync()
         {
             var projects = await _projectRepository.GetAll();
+            return projects.Select(p => new ProjectModel
+            {
+                Id = p.IdProject,
+                Title = p.Title,
+                Description = p.Description,
+                StartDate = p.StartDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
+                EndDate = p.EndDate,
+                MaxDevs = p.MaxDevs ?? 1,
+                Boards = p.Boards.Select(b => new BoardModel
+                {
+                    Id = b.IdBoard,
+                    Name = b.BoardName,
+                    Description = b.Description,
+                    Created_At = b.CreatedAt ?? DateOnly.FromDateTime(DateTime.UtcNow)
+                }).ToList()
+            }).ToList();
+        }
+
+        public async Task<IEnumerable<ProjectModel>> GetProjectsByUserIdAsync(int userId)
+        {
+            var projects = await _projectRepository.GetProjectsByUserIdAsync(userId);
             return projects.Select(p => new ProjectModel
             {
                 Id = p.IdProject,

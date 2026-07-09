@@ -11,6 +11,7 @@ namespace SimpleKanbanBoards.Business.Service.IService
     {
         Task<ProjectModel> GetProjectByIDAsync(int projectId);
         Task<IEnumerable<ProjectModel>> GetAllProjectsAsync();
+        Task<IEnumerable<ProjectModel>> GetProjectsByUserIdAsync(int userId);
         Task CreateProjectAsync(CreateProjectModel project);
         Task AddDevToProjectAsync(ProjectUserModel request);
         Task DeleteProjectAsync(int projectId);

@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleKanbanBoards.Business.Models;
 using SimpleKanbanBoards.Business.Models.Project;
 using SimpleKanbanBoards.Business.Service.IService;
+using System.Security.Claims;
 
 namespace SimpleKanbanBoards.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Project Manager")]
+    [Authorize]
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projectService;
@@ -21,7 +22,17 @@ namespace SimpleKanbanBoards.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProjects()
         {
-            var projects = await _projectService.GetAllProjectsAsync();
+            IEnumerable<ProjectModel> projects;
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool isProjectManager = User.IsInRole("Project Manager");
+            if (isProjectManager)
+            {
+                projects = await _projectService.GetAllProjectsAsync();
+            } else
+            {
+                projects = await _projectService.GetProjectsByUserIdAsync(int.TryParse(userIdClaim, out int userId) ? userId : 0);
+            }
             return Ok(ApiResult<IEnumerable<ProjectModel>>.Success(projects));
         }
 
@@ -35,6 +46,7 @@ namespace SimpleKanbanBoards.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> CreateProject([FromBody] CreateProjectModel project)
         {
             await _projectService.CreateProjectAsync(project);
@@ -42,6 +54,7 @@ namespace SimpleKanbanBoards.API.Controllers
         }
 
         [HttpPost("add-dev")]
+        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> AddDevToProject([FromBody] ProjectUserModel request)
         {
             await _projectService.AddDevToProjectAsync(request);
@@ -49,6 +62,7 @@ namespace SimpleKanbanBoards.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             await _projectService.DeleteProjectAsync(id);
@@ -56,6 +70,7 @@ namespace SimpleKanbanBoards.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> UpdateProject([FromBody] UpdateProjectModel request)
         {
             await _projectService.UpdateProjectAsync(request);
