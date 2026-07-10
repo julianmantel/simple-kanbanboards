@@ -9,7 +9,7 @@ export default function BoardPage() {
     return (
       <div className="text-center py-16">
         <p className="text-muted text-sm">Board not found.</p>
-        <Link to={`/projects/${projectId}`} className="text-teal-light mt-12 hover:underline text-sm mt-2 inline-block">
+        <Link to={`/projects/${projectId}`} className="text-teal-light hover:underline text-sm inline-block">
           Back to Project
         </Link>
       </div>
@@ -20,7 +20,7 @@ export default function BoardPage() {
     <div>
       <Link
         to={`/projects/${projectId}`}
-        className="inline-flex items-center mt-12 gap-1.5 text-sm text-muted hover:text-text transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-text transition-colors mb-6"
       >
         <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />

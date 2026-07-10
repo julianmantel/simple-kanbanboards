@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { ProjectModel } from "../types/project";
+import type { ProjectModel } from "../../types/project";
 
 export default function ProjectCard({ project }: { project: ProjectModel }) {
   const navigate = useNavigate();
@@ -9,20 +9,16 @@ export default function ProjectCard({ project }: { project: ProjectModel }) {
       onClick={() => navigate(`/projects/${project.id}`)}
       className="group bg-surface border border-border rounded-default p-5 hover:border-teal/30 hover:shadow-[0_0_30px_-10px_rgba(29,158,117,0.15)] transition-all duration-200 cursor-pointer"
     >
-      {/* Accent bar */}
       <div className="w-10 h-1 rounded-full bg-teal mb-3" />
 
-      {/* Title */}
-      <h3 className="text-sm font-semibold text-text group-hover:text-teal-light transition-colors leading-snug mb-1.5">
+      <h3 className="text-sm font-semibold text-text group-hover:text-teal-light transition-colors leading-snug mb-1.5 overflow-hidden text-ellipsis whitespace-nowrap" title={project.title}>
         {project.title}
       </h3>
 
-      {/* Description */}
       <p className="text-xs text-muted leading-relaxed line-clamp-2 mb-4">
         {project.description}
       </p>
 
-      {/* Footer */}
       <div className="flex items-center gap-4 text-xs text-muted pt-3 border-t border-border">
         <span className="flex items-center gap-1.5">
           <svg className="size-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

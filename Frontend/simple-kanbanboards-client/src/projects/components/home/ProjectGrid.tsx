@@ -1,4 +1,4 @@
-import type { ProjectModel } from "../types/project";
+import type { ProjectModel } from "../../types/project";
 import ProjectCard from "./ProjectCard";
 import { useState, useRef } from "react";
 
@@ -17,7 +17,6 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
 
   return (
     <section>
-      {/* Search */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div className="relative w-full sm:w-64">
           <svg
@@ -44,7 +43,6 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
         </div>
       </div>
 
-      {/* Project grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fadeIn">
         {searched.map((project) => (
           <ProjectCard key={project.id} project={project} />

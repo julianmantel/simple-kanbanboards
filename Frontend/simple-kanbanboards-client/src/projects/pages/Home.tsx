@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import HomeHeader from "../components/HomeHeader";
-import ProjectGrid from "../components/ProjectGrid";
-import NewProjectModal from "../components/NewProjectModal";
+import HomeHeader from "../components/home/HomeHeader";
+import ProjectGrid from "../components/home/ProjectGrid";
+import NewProjectModal from "../components/home/NewProjectModal";
 import { projectsApi } from "../api/projectsApi";
 import type { CreateProjectModel, ProjectModel } from "../types/project";
 

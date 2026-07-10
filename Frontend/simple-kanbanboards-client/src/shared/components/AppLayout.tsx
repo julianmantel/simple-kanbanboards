@@ -5,7 +5,7 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-bg-dark">
       <NavBar />
-      <main className="min-h-screen pt-16 p-6 lg:p-8">
+      <main className="pt-20 p-6 lg:pt-20 lg:p-8">
         <Outlet />
       </main>
     </div>

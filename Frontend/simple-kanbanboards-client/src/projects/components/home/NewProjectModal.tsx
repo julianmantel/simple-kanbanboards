@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type SubmitEvent } from "react";
-import { useAuth } from "../../auth/context/AuthContext";
-import type { CreateProjectModel } from "../types/project";
+import { useAuth } from "../../../auth/context/AuthContext";
+import type { CreateProjectModel } from "../../types/project";
 
 interface NewProjectModalProps {
   isOpen: boolean;
@@ -46,10 +46,9 @@ export default function NewProjectModal({ isOpen, onClose, onCreate }: NewProjec
     const nextErrors: Record<string, string> = {};
     if (!title) nextErrors.title = "Project title is required.";
     if (!description) nextErrors.description = "Project description is required.";
-    if (formData.maxDevs.trim()) {
-      if (maxDevs === null || Number.isNaN(maxDevs) || maxDevs < 1) {
-        nextErrors.maxDevs = "Max developers must be a positive number.";
-      }
+
+    if (maxDevs === null || Number.isNaN(maxDevs) || maxDevs < 1) {
+      nextErrors.maxDevs = "Max developers must be a positive number.";
     }
 
     if (Object.keys(nextErrors).length > 0) {

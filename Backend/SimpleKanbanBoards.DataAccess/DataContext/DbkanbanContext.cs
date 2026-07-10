@@ -236,12 +236,12 @@ public partial class DbkanbanContext : DbContext
 
             entity.HasOne(d => d.IdProjectNavigation).WithMany(p => p.UserProjects)
                 .HasForeignKey(d => d.IdProject)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("user_project_id_project_fkey");
 
             entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.UserProjects)
                 .HasForeignKey(d => d.IdUser)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("user_project_id_user_fkey");
         });
 
