@@ -50,7 +50,7 @@ namespace SimpleKanbanBoards.API.Controllers
             return Ok(ApiResult<string>.Success("Board toggled successfully"));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateBoard([FromBody] UpdateBoardModel updateBoardModel)
         {
             await _boardService.UpdateBoardAsync(updateBoardModel);

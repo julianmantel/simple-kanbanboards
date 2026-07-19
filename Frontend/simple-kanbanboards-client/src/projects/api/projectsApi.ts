@@ -27,6 +27,6 @@ export const projectsApi = {
     },
 
     updateProject: async (payload: UpdateProjectModel): Promise<void> => {
-        await httpClient.put<ApiResult<void>>(PROJECT_ENDPOINTS.update_project(payload.id), payload);
+        await httpClient.put<ApiResult<void>>(PROJECT_ENDPOINTS.update_project, payload);
     }
 }

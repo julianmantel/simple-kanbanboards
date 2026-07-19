@@ -47,7 +47,7 @@ export default function NewBoardModal({ isOpen, projectId, onClose, onCreate }: 
     const newBoard: CreateBoardModel = {
       name,
       description,
-      isActive: formData.isActive,
+      is_Active: formData.isActive,
       projectId,
     };
 

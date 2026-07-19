@@ -69,7 +69,7 @@ namespace SimpleKanbanBoards.API.Controllers
             return Ok(ApiResult<string>.Success("Project deleted successfully"));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> UpdateProject([FromBody] UpdateProjectModel request)
         {

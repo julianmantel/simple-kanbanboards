@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { BoardModel, UpdateBoardModel } from "../types/board";
 import BoardToolbar from "../components/BoardToolbar";
 import BoardDetails from "../components/BoardDetails";
+import BoardView from "../components/BoardView";
 import EditBoardModal from "../components/EditBoardModal";
 
 export default function BoardPage() {
@@ -74,9 +75,7 @@ export default function BoardPage() {
 
       <BoardDetails board={board} />
 
-      <div className="flex items-center justify-center h-64 border-2 border-dashed border-border rounded-default">
-        <p className="text-sm text-muted">Board view coming soon...</p>
-      </div>
+      <BoardView boardId={board.id} />
 
       <EditBoardModal
         isOpen={showEditModal}

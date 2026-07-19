@@ -86,7 +86,7 @@ namespace SimpleKanbanBoards.Tests.Integration.Controllers
 
             var payload = new UpdateProjectModel { Id = 1, Title = "Updated", Description = "Desc", MaxDevs = 4 };
 
-            var response = await _client.PutAsJsonAsync("/api/projects/1", payload);
+            var response = await _client.PutAsJsonAsync("/api/projects", payload);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
