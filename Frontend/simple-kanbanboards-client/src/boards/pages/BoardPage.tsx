@@ -1,9 +1,56 @@
 import { useParams, Link } from "react-router-dom";
-import { mockBoards } from "../data/mockBoards";
+import { boardsApi } from "../api/boardsApi";
+import { useEffect, useState } from "react";
+import type { BoardModel, UpdateBoardModel } from "../types/board";
+import BoardToolbar from "../components/BoardToolbar";
+import BoardDetails from "../components/BoardDetails";
+import EditBoardModal from "../components/EditBoardModal";
 
 export default function BoardPage() {
   const { projectId, boardId } = useParams<{ projectId: string; boardId: string }>();
-  const board = mockBoards.find((b) => b.id === Number(boardId));
+  const [board, setBoard] = useState<BoardModel | undefined>(undefined);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const fetchBoard = async () => {
+    if (!projectId || !boardId) return;
+
+    try {
+      const boardData = await boardsApi.getBoardById(parseInt(boardId));
+
+      if (boardData?.projectId !== parseInt(projectId)) {
+        setBoard(undefined);
+        console.error("Board does not belong to the specified project.");
+      } else {
+        setBoard(boardData);
+      }
+    } catch (error) {
+      console.error("Error fetching board:", error);
+      setBoard(undefined);
+    }
+  };
+
+  useEffect(() => {
+    fetchBoard();
+  }, [projectId, boardId]);
+
+  const handleSave = async (payload: UpdateBoardModel) => {
+    if (!board) return;
+    await boardsApi.updateBoard({
+      id: board.id,
+      name: payload.name,
+      description: payload.description
+    });
+    setBoard((prev) =>
+      prev ? { ...prev, name: payload.name, description: payload.description } : prev,
+    );
+    setShowEditModal(false);
+  };
+
+  const handleToggle = async () => {
+    if (!board) return;
+    await boardsApi.toggleBoard(board.id);
+    setBoard((prev) => (prev ? { ...prev, is_Active: !prev.is_Active } : prev));
+  };
 
   if (!board) {
     return (
@@ -18,26 +65,25 @@ export default function BoardPage() {
 
   return (
     <div>
-      <Link
-        to={`/projects/${projectId}`}
-        className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-text transition-colors mb-6"
-      >
-        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-        </svg>
-        Back to Project
-      </Link>
+      <BoardToolbar
+        projectId={parseInt(projectId!)}
+        onEdit={() => setShowEditModal(true)}
+        onToggle={handleToggle}
+        isActive={board.is_Active}
+      />
 
-      <div className="flex items-center gap-3 mb-8">
-        <div className={`size-3 rounded-full ${board.isActive ? "bg-teal" : "bg-muted"}`} />
-        <h1 className="text-2xl font-heading font-semibold text-text tracking-tight">{board.name}</h1>
-      </div>
-
-      <p className="text-sm text-muted mb-8">{board.description}</p>
+      <BoardDetails board={board} />
 
       <div className="flex items-center justify-center h-64 border-2 border-dashed border-border rounded-default">
         <p className="text-sm text-muted">Board view coming soon...</p>
       </div>
+
+      <EditBoardModal
+        isOpen={showEditModal}
+        board={board}
+        onSave={handleSave}
+        onClose={() => setShowEditModal(false)}
+      />
     </div>
   );
 }
