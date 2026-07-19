@@ -2,15 +2,15 @@ export interface BoardModel {
   id: number;
   name: string;
   description: string;
-  createdAt: string;
-  isActive: boolean;
+  created_At: string;
+  is_Active: boolean;
   projectId: number;
 }
 
 export interface CreateBoardModel {
   name: string;
   description: string;
-  isActive: boolean;
+  is_Active: boolean;
   projectId: number;
 }
 

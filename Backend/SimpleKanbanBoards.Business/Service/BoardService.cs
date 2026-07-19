@@ -23,10 +23,10 @@ namespace SimpleKanbanBoards.Business.Service
             _projectRepository = projectRepository;
         }
 
-        public async Task CreateBoardAsync(BoardModel board)
+        public async Task CreateBoardAsync(CreateBoardModel board)
         {
             var projectExist = await _projectRepository.Exist(p => p.IdProject == board.ProjectId);
-            if(!projectExist)
+            if (!projectExist)
             {
                 throw new NotFoundException("Project does not exist.");
             }

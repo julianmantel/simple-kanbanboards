@@ -48,10 +48,10 @@ namespace SimpleKanbanBoards.Tests.Integration.Middlewares
         [Fact]
         public async Task WhenServiceThrowsConflictException_ShouldReturn409ProblemDetails()
         {
-            _factory.BoardServiceMock.Setup(s => s.CreateBoardAsync(It.IsAny<BoardModel>()))
+            _factory.BoardServiceMock.Setup(s => s.CreateBoardAsync(It.IsAny<CreateBoardModel>()))
                                      .ThrowsAsync(new ConflictException("Already exists."));
 
-            var payload = new BoardModel { Name = "Test", ProjectId = 1 };
+            var payload = new CreateBoardModel { Name = "Test", ProjectId = 1 };
 
             var response = await _client.PostAsJsonAsync("/api/boards", payload);
 

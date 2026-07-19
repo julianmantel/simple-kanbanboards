@@ -9,7 +9,7 @@ namespace SimpleKanbanBoards.Business.Service.IService
 {
     public interface IBoardService
     {
-        Task CreateBoardAsync(BoardModel board);
+        Task CreateBoardAsync(CreateBoardModel board);
         Task UpdateBoardAsync(UpdateBoardModel board);
         Task<BoardModel> GetBoardByIdAsync(int boardId);
         Task<IEnumerable<BoardModel>> GetBoardsByProjectIdAsync(int projectId);

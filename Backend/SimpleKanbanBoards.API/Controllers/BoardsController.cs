@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SimpleKanbanBoards.Business.Models;
 using SimpleKanbanBoards.Business.Models.Board;
@@ -38,7 +37,7 @@ namespace SimpleKanbanBoards.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBoard([FromBody] BoardModel createBoardModel)
+        public async Task<IActionResult> CreateBoard([FromBody] CreateBoardModel createBoardModel)
         {
             await _boardService.CreateBoardAsync(createBoardModel);
             return Ok(ApiResult<string>.Success("Board created successfull"));

@@ -1,10 +1,14 @@
-import { mockBoards } from "../data/mockBoards";
 import BoardCard from "./BoardCard";
+import type { BoardModel } from "../types/board";
 
-export default function BoardList({ projectId }: { projectId: number }) {
-  const boards = mockBoards.filter((b) => b.projectId === projectId);
+interface BoardListProps {
+  projectId: number;
+  boards?: BoardModel[];
+};
 
-  if (boards.length === 0) {
+export default function BoardList({ projectId, boards }: BoardListProps) {
+
+  if (!boards || boards.length === 0) {
     return (
       <p className="text-sm text-muted py-8 text-center">
         No boards yet for this project.

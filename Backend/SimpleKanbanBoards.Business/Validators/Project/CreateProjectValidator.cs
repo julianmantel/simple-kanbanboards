@@ -17,8 +17,9 @@ namespace SimpleKanbanBoards.Business.Validators.Project
 
         public CreateProjectValidator()
         {
-        RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("Project title is required.")
+            RuleFor(x => x.Title)
+                .NotEmpty()
+                    .WithMessage("Project title is required.")
                 .MaximumLength(_maxTitleLength)
                     .WithMessage($"Project name must not exceed {_maxTitleLength} characters.");
 

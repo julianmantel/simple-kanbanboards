@@ -27,7 +27,7 @@ public class BoardServiceTests
     [Fact]
     public async Task CreateBoardAsync_WhenProjectExists_ShouldAddBoard()
     {
-        var model = new BoardModel { Name = "Sprint 1", Description = "First sprint", ProjectId = 10 };
+        var model = new CreateBoardModel { Name = "Sprint 1", Description = "First sprint", ProjectId = 10 };
         _projectRepoMock.Setup(r => r.Exist(It.IsAny<Expression<Func<Project, bool>>>()))
                         .ReturnsAsync(true);
 
@@ -44,7 +44,7 @@ public class BoardServiceTests
     [Fact]
     public async Task CreateBoardAsync_WhenProjectDoesNotExist_ShouldThrowNotFoundException()
     {
-        var model = new BoardModel { Name = "Sprint 1", ProjectId = 99 };
+        var model = new CreateBoardModel { Name = "Sprint 1", ProjectId = 99 };
         _projectRepoMock.Setup(r => r.Exist(It.IsAny<Expression<Func<Project, bool>>>()))
                         .ReturnsAsync(false);
 

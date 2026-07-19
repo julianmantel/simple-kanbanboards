@@ -1,14 +1,15 @@
 import { useState } from "react";
 import BoardList from "../../../boards/components/BoardList";
 import NewBoardModal from "./NewBoardModal";
-import type { CreateBoardModel } from "../../../boards/types/board";
+import type { BoardModel, CreateBoardModel } from "../../../boards/types/board";
 
 interface ProjectBoardsSectionProps {
   projectId: number;
   onCreateBoard: (board: CreateBoardModel) => void;
+  boards?: BoardModel[];
 }
 
-export default function ProjectBoardsSection({ projectId, onCreateBoard }: ProjectBoardsSectionProps) {
+export default function ProjectBoardsSection({ projectId, onCreateBoard, boards }: ProjectBoardsSectionProps) {
   const [showNewBoardModal, setShowNewBoardModal] = useState(false);
 
   return (
@@ -26,7 +27,7 @@ export default function ProjectBoardsSection({ projectId, onCreateBoard }: Proje
         </button>
       </div>
 
-      <BoardList projectId={projectId} />
+      <BoardList projectId={projectId} boards={boards} />
 
       <NewBoardModal
         isOpen={showNewBoardModal}

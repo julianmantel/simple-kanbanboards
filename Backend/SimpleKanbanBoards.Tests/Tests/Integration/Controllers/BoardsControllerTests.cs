@@ -56,10 +56,10 @@ namespace SimpleKanbanBoards.Tests.Integration.Controllers
         [Fact]
         public async Task POST_Board_WithValidPayload_ShouldReturn200()
         {
-            _factory.BoardServiceMock.Setup(s => s.CreateBoardAsync(It.IsAny<BoardModel>()))
+            _factory.BoardServiceMock.Setup(s => s.CreateBoardAsync(It.IsAny<CreateBoardModel>()))
                                      .Returns(Task.CompletedTask);
 
-            var payload = new BoardModel { Name = "New Board", Description = "Desc", ProjectId = 1 };
+            var payload = new CreateBoardModel { Name = "New Board", Description = "Desc", ProjectId = 1 };
 
             var response = await _client.PostAsJsonAsync("/api/boards", payload);
 
